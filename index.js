@@ -1,15 +1,14 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const { Configuration, OpenAIApi } = require('openai');
+const OpenAI = require('openai');
 require('dotenv').config();
 
 const app = express();
 app.use(bodyParser.json());
 
-const configuration = new Configuration({
+const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
-const openai = new OpenAIApi(configuration);
 
 app.post('/decode', async (req, res) => {
   const { text } = req.body;
@@ -24,26 +23,8 @@ app.post('/decode', async (req, res) => {
 Ignore o restante do texto. Limite a resposta a no máximo 5 linhas.
 Texto: """${text}"""`;
 
-    const completion = await openai.createChatCompletion({
+    const completion = await openai.chat.completions.create({
       model: 'gpt-4',
       temperature: 0.3,
       max_tokens: 500,
-      messages: [{ role: 'user', content: prompt }],
-    });
-
-    const output = completion.data.choices[0].message.content.trim();
-    res.json({ result: output });
-  } catch (error) {
-    console.error('Erro:', error.message);
-    res.status(500).json({ error: 'Erro ao interpretar pedido.' });
-  }
-});
-
-app.get('/', (req, res) => {
-  res.send('API de interpretação de pedidos médicos ativa.');
-});
-
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Servidor rodando na porta ${PORT}`);
-});
+      messages: [{ role: 'user', content: prompt]()
