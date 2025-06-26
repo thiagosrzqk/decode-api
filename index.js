@@ -27,4 +27,4 @@ Texto: """${text}"""`;
       model: 'gpt-4',
       temperature: 0.3,
       max_tokens: 500,
-      messages: [{ role: 'user', content: prompt]()
+messages: [{ role: 'user', content: prompt }],
