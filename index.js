@@ -16,7 +16,6 @@ app.post('/decode', async (req, res) => {
 
   try {
     const prompt = `Extraia apenas as seguintes informações de forma organizada, objetiva e sem repetir termos desnecessários:
-
 - Exame solicitado
 - Indicação clínica
 
@@ -27,4 +26,18 @@ Texto: """${text}"""`;
       model: 'gpt-4',
       temperature: 0.3,
       max_tokens: 500,
-messages: [{ role: 'user', content: prompt }],
+      messages: [{ role: 'user', content: prompt }],
+    });
+
+    const resposta = completion.choices[0].message.content;
+    res.json({ resposta });
+  } catch (error) {
+    console.error('Erro ao processar:', error);
+    res.status(500).json({ error: 'Erro interno no servidor.' });
+  }
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Servidor rodando na porta ${PORT}`);
+});
